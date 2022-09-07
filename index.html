@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Company database</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.js"></script>
+  </head>
+  <body>
+    <!-- Add user button -->
+    <button type="button" class="btn btn-primary" id="addUserButton" data-bs-toggle="modal" data-bs-target="#addUserModal">Add user</button>
+    <!-- Login button  data-bs-toggle="modal" data-bs-target="#loginModal"-->
+    <button type="button" class="btn btn-outline-primary" id="loginButton">Login</button>
+    <!-- Login modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="loginModalLabel">Login</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form name="login">
+              <div class="mb-3">
+                  <label for="inputLogin" class="form-label">Login</label>
+                  <input type="text" class="form-control" id="inputLogin" aria-describedby="emailHelp">
+              </div>
+              <div class="mb-3">
+                  <label for="inputPassword" class="form-label">Password</label>
+                  <input type="password" class="form-control" id="inputPassword">
+              </div>
+              <div class="modal-footer"></div>
+                  <button type="submit" class="btn btn-primary" data-bs-dismiss="modal" onclick="loginSubmit();">Login</button>
+              </div>
+          </form>
+      </div>
+    </div>
+
+    <!-- Sort checkbox -->
+    <div id="sortButtons">
+      <div class="form-check">
+          <input class="form-check-input" type="radio" name="sortButtonName" id="ascSortButton">
+          <label class="form-check-label" for="ascSortButton">
+          Ascending sort
+          </label>
+      </div>
+      <div class="form-check">
+          <input class="form-check-input" type="radio" name="sortButtonName" id="descSortButton">
+          <label class="form-check-label" for="descSortButton">
+          Descending sort
+          </label>
+      </div>
+      <div class="form-check">
+          <input class="form-check-input" type="radio" name="sortButtonName" id="noSortButton">
+          <label class="form-check-label" for="noSortButton" checked>
+          No sort
+          </label>
+      </div>
+  </div>
+
+    <div class="container mt-3">
+      <h2>Company database</h2>
+      <input class="form-control" id="employeeSearch" type="text" placeholder="Search..">
+      <br>  
+      
+      <script type="text/template" id="employeeTemplate">
+        <% employees.forEach(function(employee) { %>
+          <tr id="employee<%= employee.id %>">
+            <td class="employeeId"><%= employee.id %></td>
+            <td class="employeeName"><%= employee.name %></td>
+            <td class="employeeSurname"><%= employee.surname %></td>
+            <td class="employeePosition"><%= employee.position %></td>
+            <td class="employeeBirthday"><%= employee.birthday %></td>
+            <td class="employeeSalary"><%= employee.salary %>$</td>
+            <td>
+                <button type="button" class="btn btn-primary editButtons" id="editButton<%= employee.id %>" data-bs-toggle="modal" data-bs-target="#addUserModal">Edit</button>
+                <button type="button" class="btn btn-primary rmUserButtons" id="rmUserButton<%= employee.id %>">Remove</button>
+            </td>                    
+          </tr>
+        <% }); %>
+      </script>
+      
+    <!--  <table class="table table-striped table-bordered"> -->
+      <table id="employeeTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Position</th>
+                <th>Birthday</th>
+                <th>Salary</th>
+                <th id="controlButtons">Control</th>
+            </tr>
+        </thead>
+        <tbody id="employeeTableBody">
+        </tbody>
+      </table>
+
+    <!-- Add user modal -->
+    <div class="modal" id="addUserModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addUserModalTitle">Add user</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              Name: <input id="addUserName" type="text" class="form-control" placeholder="Name">
+              <br>
+              Surname: <input id="addUserSurname" type="text" class="form-control" placeholder="Surname">
+              <br>
+              Position:
+                  <select class="form-select" aria-label="Default select example" id="addUserPosition">
+                      <option value="Junior Software Engineer" id="Junior Software Engineer">Junior</option>
+                      <option value="Software Engineer" id="Software Engineer">Middle</option>
+                      <option value="Senior Software Engineer" id="Senior Software Engineer">Senior</option>
+                      <option value="Lead Software Engineer" id="Lead Software Engineer">Lead</option>
+                  </select>
+              <br><br>
+              Salary: <input id="addUserSalary" type="text" class="form-control" placeholder="Salary">
+              <br>
+              Birthday: <input id="addUserBirthday" type="text" class="form-control" placeholder="Birthday">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="addUserSubmitButton" data-bs-dismiss="modal">Save changes</button>
+          </div> 
+        </div>
+      </div>
+    </div>
+
+    <!-- Table pagination bar -->
+    <div class="pagination justify-content-center" id="employeeNavigation">
+      <a class="page-link" href="#" aria-label="Previous" id="prevPage">Previous</a>
+      <a class="page-link active" id="curPage"></a>
+      <!--<a class="page-link" href="#">2</a>
+      <a class="page-link" href="#">3</a>-->
+      <a class="page-link" href="#" aria-label="Next" id="nextPage">Next</a>
+    </div>
+
+
+
+
+        <!-- Option 2: Separate Popper and Bootstrap JS -->
+        <!--
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+        -->
+      <script src="index.js"></script>
+
+  </body>
+</html>
